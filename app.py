@@ -22,38 +22,23 @@ with st.sidebar:
 img_file_buffer = st.camera_input("Toma una Foto")
 
 if img_file_buffer is not None:
-    # To read image file buffer with OpenCV:
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-   #To read image file buffer as a PIL Image:
-    img = Image.open(img_file_buffer)
 
-    newsize = (224, 224)
-    img = img.resize(newsize)
-    # To convert PIL Image to numpy array:
-    img_array = np.array(img)
+    # procesamiento imagen...
 
-    # Normalize the image
-    normalized_image_array = (img_array.astype(np.float32) / 127.0) - 1
-    # Load the image into the array
-    data[0] = normalized_image_array
+    prediction = model.predict(data)
 
-    # run the inference
-  # Obtener la predicción más alta
-index = np.argmax(prediction)
-confidence = prediction[0][index]
+    # 👇 AQUÍ VA LO NUEVO
+    index = np.argmax(prediction)
+    confidence = prediction[0][index]
 
-# Diccionario de respuestas bonitas
-respuestas = {
-    0: "💖 ¡Eres tú Angie! Qué foto tan linda",
-    1: "👀 No eres Angie... pero igual interesante",
-    2: "📱 Veo un celular por ahí",
-    3: "🥤 Ese termo se ve útil"
-}
+    respuestas = {
+        0: "💖 ¡Eres tú Angie! Qué foto tan linda",
+        1: "👀 No eres Angie... pero interesante",
+        2: "📱 Veo un celular por ahí",
+        3: "🥤 Ese termo se ve útil"
+    }
 
-# Mostrar resultado SOLO si es confiable
-if confidence > 0.6:
-    st.success(respuestas[index])
-else:
-    st.warning("🤔 No estoy muy segur@ de lo que veo...")
-
-
+    if confidence > 0.6:
+        st.success(respuestas[index])
+    else:
+        st.warning("🤔 No estoy muy segur@ de lo que veo...")
